@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | Altitude 30 Labs</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        header {
+            background-color: #222;
+            border-bottom: 2px solid #444;
+        }
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+            min-height: 80px;
+        }
+        .navbar-brand {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .navbar-brand h1 {
+            margin: 0;
+            font-size: 2em;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+        .navbar-brand p {
+            margin: 0;
+            font-size: 1em;
+            color: #ccc;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        nav a {
+            color: #fff;
+            padding: 16px 20px;
+            text-decoration: none;
+            font-size: 1.1em;
+            border-right: 1px solid #444;
+            transition: background 0.2s, color 0.2s;
+            font-weight: bold;
+        }
+        nav a:last-child {
+            border-right: none;
+        }
+        nav a:hover, nav a:focus {
+            background-color: #444;
+            color: #ffd700;
+            outline: none;
+        }
+        nav a.active, nav a[href="products.html"] {
+            background-color: #111;
+            color: #ffd700;
+            font-weight: bold;
+        }
+        .products-section {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .products-title {
+            color: #ffd700;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            justify-content: center;
+        }
+        .product-card {
+            background: #181818;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            padding: 28px 20px;
+            flex: 1 1 300px;
+            min-width: 260px;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .product-card img {
+            width: 100px;
+            margin-bottom: 18px;
+        }
+        .product-card h3 {
+            color: #ffd700;
+            margin: 0 0 10px 0;
+        }
+        .product-card p {
+            color: #ccc;
+            text-align: center;
+        }
+        @media (max-width: 700px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0 10px;
+            }
+            nav {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            nav a {
+                padding: 12px 10px;
+                font-size: 1em;
+            }
+            .product-list {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="navbar-brand">
+                <a href="home.html" style="text-decoration:none; color:inherit;">
+                    <h1 style="display:inline; color:#fff;">Altitude 30 Labs</h1>
+                </a>
+                <a href="home.html" style="text-decoration:none; color:inherit;">
+                    <p style="display:inline; color:#ccc;">pushing beyond frontiers</p>
+                </a>
+            </div>
+            <nav aria-label="Main navigation">
+                <a href="products.html" class="active">Products</a>
+                <a href="services.html">Services</a>
+                <a href="#resources">Resources</a>
+                <a href="#partners">Partners</a>
+                <a href="#contact">Contact</a>
+                <a href="#support">Support</a>
+                <a href="#login">Login</a>
+            </nav>
+        </div>
+    </header>
+    <section class="products-section">
+        <div class="products-title">Our Products</div>
+        <div class="product-list">
+            <div class="product-card">
+                <img src="https://cdn.prod.website-files.com/67d135146f75e1842b217375/68472a9e007cbc91b932668c_Firefly%20-%20Parallax%20animation.avif" alt="Firefly Satellite">
+                <h3>Firefly Constellation</h3>
+                <p>High-resolution, high-frequency hyperspectral imaging satellites for global monitoring and environmental insights.</p>
+            </div>
+            <div class="product-card">
+                <img src="https://cdn.prod.website-files.com/67d135146f75e1842b217375/67f7b9d528f62b90adc05fb1_Earth-p-800.avif" alt="Aurora Platform">
+                <h3>Aurora Platform</h3>
+                <p>No-code Earth observation studio for intuitive satellite data analysis and actionable insights for every sector.</p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
