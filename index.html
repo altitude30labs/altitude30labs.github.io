@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Altitude 30 Labs</title>
+  <link rel="icon" href="assets/Logos/Rev16-HR.png" type="image/png" />
+  <style>
+    @font-face {
+      font-family: "TTSupermolot";
+      src: url("assets/Fonts/TT Supermolot Neue Trial DemiBold.ttf") format("truetype");
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #000;
+      --fg: #fff;
+      --muted: #cfcfcf;
+      --accent: #2a2a2a;
+      --nav-alpha: rgba(255,255,255,0.04);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    /* Always show a vertical scrollbar and provide simple custom styling */
+    html { height: 100%; overflow-y: scroll; }
+    * { scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg); }
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 8px; border: 3px solid var(--bg); }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: "TTSupermolot", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+      line-height: 1.4;
+      transition: background-color 400ms;
+    }
+
+    /* Mini header that appears fixed in top-left when scrolled */
+    .mini-header {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: transparent; /* keep black background */
+      pointer-events: auto;
+      opacity: 0;
+      transform: translateY(-8px) scale(0.98);
+      transition: opacity 420ms cubic-bezier(.2,.8,.2,1), transform 420ms cubic-bezier(.2,.8,.2,1);
+      will-change: opacity, transform;
+      align-items: center;
+    }
+    .mini-header .mini-logo { width: 56px; height: auto; display: block; }
+    .mini-header .mini-text { display:flex; flex-direction:column; gap:0; line-height:1; }
+    .mini-header .mini-title { font-size: 0.95rem; white-space: nowrap; color: var(--fg); }
+    .mini-header .mini-tag { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+
+    /* top navigation (appears when scrolled) */
+    .top-nav {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: transparent;
+      opacity: 0;
+      transform: translateY(-8px) scale(0.98);
+      transition: opacity 420ms cubic-bezier(.2,.8,.2,1), transform 420ms cubic-bezier(.2,.8,.2,1);
+      will-change: opacity, transform;
+      pointer-events: auto;
+    }
+    .top-nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+    .top-nav a {
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 0.95rem;
+      opacity: 0.95;
+      padding: 6px 8px;
+      border-radius: 6px;
+      transition: background-color 180ms, color 180ms, transform 160ms;
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .top-nav a:hover,
+    .top-nav a:focus {
+      background-color: var(--nav-alpha);
+      outline: none;
+      transform: translateY(-2px);
+    }
+    /* show nav when scrolled */
+    body.scrolled .top-nav {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* show mini header when body.scrolled */
+    body.scrolled .mini-header {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* HERO (top) */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow: visible;
+      transition: opacity 420ms ease, transform 420ms ease;
+    }
+
+    /* when scrolled, fade out hero to avoid duplicate visuals */
+    body.scrolled .hero {
+      opacity: 0.03;
+      transform: translateY(-6px) scale(0.995);
+      pointer-events: none;
+    }
+
+    /* container that was used originally */
+    .container {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      max-width: 1200px;
+      width: 100%;
+      transition: transform 700ms cubic-bezier(.2,.8,.2,1), gap 500ms ease, max-width 500ms ease;
+      will-change: transform;
+    }
+
+    .logo {
+      max-width: 240px;
+      height: auto;
+      flex: 0 0 auto;
+      transition: max-width 700ms cubic-bezier(.2,.8,.2,1), transform 700ms;
+    }
+
+    .text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transition: transform 700ms cubic-bezier(.2,.8,.2,1);
+      transform-origin: left top;
+    }
+
+    .title {
+      font-size: clamp(1.5rem, 4vw, 3rem);
+      line-height: 1;
+      letter-spacing: 0.02em;
+      transition: font-size 700ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    .tagline {
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      opacity: 0.95;
+      margin-top: 0.25rem;
+      transition: font-size 700ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    /* Fade-in / slide-up animation keyframes used for hero and about reveal */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo, .title, .tagline {
+      opacity: 0;
+      will-change: transform, opacity;
+      animation-name: fadeInUp;
+      animation-duration: 700ms;
+      animation-timing-function: cubic-bezier(.2,.8,.2,1);
+      animation-fill-mode: both;
+    }
+
+    /* Staggered delays for hero */
+    .logo { animation-delay: 200ms; }
+    .title { animation-delay: 480ms; }
+    .tagline { animation-delay: 760ms; }
+
+    /* ABOUT section (appears when scrolled into view) */
+    .about {
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      color: var(--fg);
+    }
+
+    .about-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    .about h2 {
+      font-size: clamp(1.25rem, 3.5vw, 2rem);
+      margin: 0 0 0.25rem 0;
+    }
+
+    .about p {
+      margin: 0 0 0.75rem 0;
+      color: var(--muted);
+      font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+    }
+
+    .about .callout {
+      margin-top: 1rem;
+      color: var(--fg);
+      font-weight: 700;
+    }
+
+    /* Reveal class uses same fadeInUp animation to match hero */
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      animation-name: none;
+      transition: opacity 700ms cubic-bezier(.2,.8,.2,1), transform 700ms cubic-bezier(.2,.8,.2,1);
+    }
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+      animation-name: fadeInUp;
+      animation-duration: 700ms;
+      animation-fill-mode: both;
+    }
+
+    /* Respect user's reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      .logo, .title, .tagline, .reveal, .mini-header, .hero, .top-nav {
+        animation: none;
+        transition: none;
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .container { gap: 1rem; }
+      .logo { max-width: 180px; }
+    }
+
+    @media (max-width: 600px) {
+      .hero .container { flex-direction: column; text-align: center; }
+      .logo { max-width: 160px; }
+      .about { padding: 3rem 1.25rem; }
+      .mini-header { top: 12px; left: 12px; gap: 0.5rem; }
+      .mini-header .mini-logo { width: 48px; }
+      .mini-header .mini-title { font-size: 0.9rem; }
+      .mini-header .mini-tag { font-size: 0.7rem; }
+      .top-nav { right: 12px; top: 12px; }
+      .top-nav ul { gap: 8px; }
+      .top-nav a { font-size: 0.85rem; padding: 5px 7px; }
+    }
+
+    /* hide nav on very small screens to avoid overflow (mobile recommendation: implement hamburger separately) */
+    @media (max-width: 420px) {
+      .top-nav { display: none; }
+    }
+
+  </style>
+</head>
+<body>
+  <!-- fixed mini header (hidden until scrolled) -->
+  <header class="mini-header" id="miniHeader" aria-hidden="true" role="banner">
+    <img src="assets/Logos/Rev16-HR-NBG.png" alt="" class="mini-logo" aria-hidden="true" />
+    <div class="mini-text" aria-hidden="true">
+      <div class="mini-title">Altitude 30 Labs</div>
+      <div class="mini-tag">Dare . Do. Deliver</div>
+    </div>
+  </header>
+
+  <!-- top navigation (appears when scrolled) -->
+  <nav id="topNav" class="top-nav" aria-hidden="true" role="navigation" aria-label="Main navigation">
+    <ul>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#solutions">Solutions</a></li>
+      <li><a href="#resources">Resources</a></li>
+      <li><a href="#company">Company</a></li>
+      <li><a href="#partners">Partners</a></li>
+      <li><a href="#support">Support</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section class="hero" role="presentation" aria-label="Altitude 30 Labs hero">
+      <div class="container" id="heroContainer">
+        <img src="assets/Logos/Rev16-HR-NBG.png" alt="Altitude 30 Labs logo" class="logo" />
+        <div class="text">
+          <div class="title">Altitude 30 Labs</div>
+          <div class="tagline">Dare . Do. Deliver</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- New page / section that appears when scrolled into view -->
+    <section id="about" class="about" aria-labelledby="about-heading">
+      <div class="about-inner">
+        <div class="reveal" role="article" id="aboutReveal">
+          <h2 id="about-heading">About Altitude 30 Labs</h2>
+          <p>
+            Altitude 30 Labs is a remote sensing company delivering actionable intelligence from air and space.
+            We combine high-resolution aerial platforms, LiDAR, hyperspectral and multispectral sensors with advanced
+            geospatial analytics to help clients map, monitor and manage natural and built environments.
+          </p>
+          <p>
+            Our core services include precision mapping, vegetation & crop health analysis, infrastructure inspection,
+            coastal and flood monitoring, and environmental change detection. We process raw sensor data into calibrated,
+            georeferenced products and deliver insights through custom dashboards and automated reporting.
+          </p>
+          <p class="callout">
+            Technology stack: UAVs & manned aircraft, LiDAR, hyperspectral & multispectral imagers, photogrammetry,
+            AI-driven image analytics, and cloud-native geospatial pipelines.
+          </p>
+          <p>
+            Whether you need rapid incident response mapping or long-term monitoring programs, we turn airborne data into
+            trusted decisions — Dare. Do. Deliver.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const aboutEl = document.getElementById('aboutReveal');
+      const miniHeader = document.getElementById('miniHeader');
+      const topNav = document.getElementById('topNav');
+
+      if (prefersReduced) {
+        document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
+        // ensure mini header & nav visible for accessibility if needed
+        miniHeader.setAttribute('aria-hidden', 'false');
+        topNav.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('scrolled');
+        return;
+      }
+
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // fade-in the about content
+            entry.target.classList.add('in-view');
+            // show the fixed mini header and top nav
+            document.body.classList.add('scrolled');
+            miniHeader.setAttribute('aria-hidden', 'false');
+            topNav.setAttribute('aria-hidden', 'false');
+          } else {
+            // if about not visible (scrolled back up) hide mini header & nav
+            document.body.classList.remove('scrolled');
+            miniHeader.setAttribute('aria-hidden', 'true');
+            topNav.setAttribute('aria-hidden', 'true');
+            entry.target.classList.remove('in-view');
+          }
+        });
+      }, { threshold: 0.12 });
+
+      if (aboutEl) revealObserver.observe(aboutEl);
+
+      // trigger hero animations on load
+      window.addEventListener('load', () => {
+        document.querySelectorAll('.logo, .title, .tagline').forEach(n => {
+          n.style.animationPlayState = 'running';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
