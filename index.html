@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Altitude 30 Labs</title>
+  <!-- preload local font to reduce FOUT/FOIT -->
+  <link rel="preload" href="assets/Fonts/TT Supermolot Neue Trial DemiBold.ttf" as="font" type="font/ttf">
   <link rel="icon" href="assets/Logos/Rev16-HR.png" type="image/png" />
   <style>
     @font-face {
@@ -206,18 +208,20 @@
     /* Descriptor moved to the right 3/4 position, larger font */
     .descriptor {
       position: absolute;
-      right: 5%;               /* ~half of the right half (3/4 of the viewport) */
+      right: 12.5%;
       top: 50%;
       transform: translateY(-50%);
       display: flex;
       flex-direction: column;
       gap: 0;
-      color: var;
-      font-size: clamp(2.1rem, 2.6vw, 10.8rem); /* increased size */
+      color: var(--fg); /* changed to bright white (foreground) */
+      /* constrained sizing to avoid overflow while still larger */
+      font-size: clamp(1.6rem, 2.6vw, 2.8rem);
       line-height: 1;
       text-align: right;
       align-items: flex-end;
       pointer-events: none;
+      max-width: 40vw;
     }
     .descriptor span {
       display: block;
@@ -374,10 +378,11 @@
       <div class="container" id="heroContainer">
         <!-- wrap logo + text in a single homepage link so clicking any of them navigates to index.html -->
         <a href="index.html" class="home-link" aria-label="Go to homepage">
-          <img src="assets/Logos/Rev16-HR-NBG.png" alt="Altitude 30 Labs logo" class="logo" />
+          <!-- add width/height to reduce layout shift; adjust values to match your source image -->
+          <img src="assets/Logos/Rev16-HR-NBG.png" alt="Altitude 30 Labs logo" class="logo" width="240" height="72" />
           <div class="text">
             <div class="title">Altitude 30 Labs</div>
-            <div class="tagline">Dare . Do. Deliver</div>
+            <div class="tagline">Dare . Do . Deliver</div>
           </div>
         </a>
 
@@ -397,22 +402,30 @@
         <div class="reveal" role="article" id="aboutReveal">
           <h2 id="about-heading">About Altitude 30 Labs</h2>
           <p>
-            Altitude 30 Labs is a geospatial intelligence company delivering actionable intelligence from air and space.
-            We combine high-resolution aerial platforms, LiDAR, hyperspectral and multispectral sensors with advanced
-            geospatial analytics to help clients map, monitor and manage natural and built environments.
+            Altitude 30 Labs is a spatial intelligence company transforming aerial and satellite data into actionable insights.
           </p>
           <p>
-            Our core services include precision mapping, vegetation & crop health analysis, infrastructure inspection,
-            coastal and flood monitoring, and environmental change detection. We process raw sensor data into calibrated,
-            georeferenced products and deliver insights through custom dashboards and automated reporting.
+            We integrate high-resolution aerial platforms, LiDAR, hyperspectral and multispectral sensors with advanced AI-driven analytics
+            to help organizations map, monitor and manage both natural and built environments with precision.
+          </p>
+          <p>
+            Our expertise spans precision mapping, water resources management, vegetation & crop health analysis, infrastructure inspection,
+            coastal and flood monitoring, marine and atmospheric sciences, climate change and environmental change detection.
+          </p>
+          <p>
+            We process raw sensor data into calibrated, georeferenced products and deliver insights through custom dashboards and automated reporting systems.
           </p>
           <p class="callout">
             Technology stack: UAVs & manned aircraft, LiDAR, hyperspectral & multispectral imagers, photogrammetry,
             AI-driven image analytics, and cloud-native geospatial pipelines.
           </p>
           <p>
-            Whether you need rapid incident response mapping or long-term monitoring programs, we turn airborne data into
-            trusted decisions — Dare. Do. Deliver.
+            Whether you need rapid incident response mapping or long-term monitoring programs, we turn airborne and spaceborne data into
+            trusted intelligence.
+            
+          </p>
+          <p class="callout">
+            We — Dare. Do. Deliver.
           </p>
         </div>
       </div>
@@ -425,7 +438,13 @@
       const aboutEl = document.getElementById('aboutReveal');
       const miniHeader = document.getElementById('miniHeader');
       const topNav = document.getElementById('topNav');
+      const navLinks = topNav ? Array.from(topNav.querySelectorAll('a')) : [];
+      const miniLink = miniHeader ? miniHeader.querySelector('a') : null;
       const hero = document.querySelector('.hero');
+
+      // keep interactive controls inert until shown
+      navLinks.forEach(a => a.setAttribute('tabindex', '-1'));
+      if (miniLink) miniLink.setAttribute('tabindex', '-1');
 
       if (prefersReduced) {
         document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
@@ -433,6 +452,8 @@
         document.querySelectorAll('.descriptor span').forEach(s => s.style.opacity = '1');
         miniHeader.setAttribute('aria-hidden', 'false');
         topNav.setAttribute('aria-hidden', 'false');
+        navLinks.forEach(a => a.setAttribute('tabindex', '0'));
+        if (miniLink) miniLink.setAttribute('tabindex', '0');
         document.body.classList.add('scrolled');
         return;
       }
@@ -458,10 +479,14 @@
             document.body.classList.add('scrolled');
             miniHeader.setAttribute('aria-hidden', 'false');
             topNav.setAttribute('aria-hidden', 'false');
+            navLinks.forEach(a => a.setAttribute('tabindex', '0'));
+            if (miniLink) miniLink.setAttribute('tabindex', '0');
           } else {
             document.body.classList.remove('scrolled');
             miniHeader.setAttribute('aria-hidden', 'true');
             topNav.setAttribute('aria-hidden', 'true');
+            navLinks.forEach(a => a.setAttribute('tabindex', '-1'));
+            if (miniLink) miniLink.setAttribute('tabindex', '-1');
           }
           ticking = false;
         });
